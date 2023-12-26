@@ -1,11 +1,13 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
+dotenv.config()
+
+const mongoUri = process.env.MONGO_URI
+mongoose.set('strictQuery', true)
 mongoose
-  .connect(
-    "mongodb+srv://fer3443:1RqnRlHHNUJfg5Fy@cluster0.9z6qiw6.mongodb.net/"
-  )
+  .connect(mongoUri)
   .then((res) => {
     console.log("se conecto correctamente a la base de datos");
   })
   .catch((err) => console.log("error al conectar con la base de datos" +err));
-mongoose.set('strictQuery', true)
