@@ -13,6 +13,10 @@ const TaskScheme = new Schema({
     createdAt: {
         type: Date,
         default: Date.now()
+    },
+    virtual_delete: {
+        type: Boolean,
+        default: false
     }
 })
 

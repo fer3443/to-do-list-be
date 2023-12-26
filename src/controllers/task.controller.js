@@ -6,7 +6,7 @@ async function GetTasks(req, res) {
     return res.status(200).json({
       ok: true,
       data: task,
-      msg: "peticion exitosa"
+      msg: "peticion exitosa",
     });
   } catch (error) {
     return res.status(500).json({
@@ -17,37 +17,73 @@ async function GetTasks(req, res) {
 }
 
 //crea una tarea
-async function AddTask(req, res){
+async function AddTask(req, res) {
   try {
-    const newTask = await TaskScheme.create(req.body)
+    const newTask = await TaskScheme.create(req.body);
     return res.status(201).json({
       ok: true,
       addedTask: newTask,
-      msg: 'tarea agregada con exito'
-    })
+      msg: "tarea agregada con exito",
+    });
   } catch (error) {
     return res.status(500).json({
       ok: false,
-      error_msg: "error al intentar agregar una tarea " + error
-    })
+      error_msg: "error al intentar agregar una tarea " + error,
+    });
   }
 }
 
 //modifica una tarea
-async function UpdateTask(req, res){
-  const {id} = req.params
+async function UpdateTask(req, res) {
+  const { id } = req.params;
   try {
     const updateTask = await TaskScheme.findByIdAndUpdate(id, req.body);
     return res.status(202).json({
       ok: true,
       updatedTask: updateTask,
-      msg: "tarea modificada con exito"
-    })
+      msg: "tarea modificada con exito",
+    });
   } catch (error) {
     return res.status(404).json({
       ok: false,
-      error_msg: 'error al modificar tarea ' + error
+      error_msg: "error al modificar tarea " + error,
+    });
+  }
+}
+
+//funcion para borrar tareas permanentemente
+async function DeleteTask(req, res) {
+  const { id } = req.params;
+  try {
+    const deleteTask = await TaskScheme.findByIdAndDelete(id);
+    return res.status(201).json({
+      ok: true,
+      deletedTask: deleteTask,
+      msg: "tarea borrada con exito",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      msg_error: "error al borrar la tarea " + error,
+    });
+  }
+}
+
+//"borra" una tarea de manera temporal
+async function TemporalDeleteTask(req, res){
+  const { id } = req.params;
+  try {
+    const tempDeleteTask = await TaskScheme.findByIdAndUpdate(id, {virtual_delete: true})
+    return res.status(200).json({
+      ok: true,
+      tempDeletedTask: tempDeleteTask,
+      msg: 'tarea eliminada con éxito'
+    })
+  } catch (error) {
+    res.status(500).json({
+      ok: false, 
+      msg_error: 'error al eliminar la tarea ' + error
     })
   }
 }
-export { GetTasks, AddTask, UpdateTask };
+export { GetTasks, AddTask, UpdateTask, DeleteTask, TemporalDeleteTask };
