@@ -9,11 +9,12 @@ const userScheme = new Schema({
     type: String,
     required: true,
   },
-  password: {
-    type: String,
-    required: true,
-  },
+  passHash: String,
   avatar: String,
+	tasks:[{
+		type: Schema.Types.ObjectId,
+		ref: 'task'
+	}],
   createdAt: {
     type: Date,
     default: Date.now(),
