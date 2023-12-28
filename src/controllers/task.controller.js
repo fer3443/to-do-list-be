@@ -1,8 +1,9 @@
 import TaskScheme from "../models/task";
+import UserScheme from "../models/user";
 //trae todas las tareas de la bd
 async function GetTasks(req, res) {
   try {
-    const task = await TaskScheme.find();
+    const task = await TaskScheme.find().populate("user_id", "userName");
     return res.status(200).json({
       ok: true,
       data: task,
@@ -19,7 +20,11 @@ async function GetTasks(req, res) {
 //crea una tarea
 async function AddTask(req, res) {
   try {
+    const {user_id} = req.body
     const newTask = await TaskScheme.create(req.body);
+    const user = await UserScheme.findById(user_id);
+    user.tasks.push({_id: newTask._id});
+    user.save();
     return res.status(201).json({
       ok: true,
       addedTask: newTask,

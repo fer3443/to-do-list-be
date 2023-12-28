@@ -30,12 +30,13 @@ async function CreateUser(req, res) {
 async function LoginUser(req, res) {
   try {
     const { userName, password } = req.body;
-    const userLogged = await UserScheme.findOne({ userName });
+    const userLogged = await UserScheme.findOne({ userName }).populate("tasks");
     if (!userLogged) return res.status(500).json(res_error);
     const rightPass = await Compare(password, userLogged.passHash);
     if (!rightPass) return res.status(500).json(res_error);
     return res.status(200).json({
       ok: true,
+      user: userLogged,
       msg: "inicio de sesion exitoso!",
     });
   } catch (error) {
