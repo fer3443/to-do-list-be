@@ -24,4 +24,11 @@ const TaskScheme = new Schema({
   },
 });
 
+TaskScheme.set("toJSON",{
+  transform: function(doc, retorno){
+    retorno.taskId = retorno._id,
+    delete retorno._id,
+    delete retorno.__v
+  }
+})
 export default mongoose.model("task", TaskScheme);

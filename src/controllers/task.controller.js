@@ -3,9 +3,14 @@ import UserScheme from "../models/user";
 //trae todas las tareas de la bd
 async function GetTasks(req, res) {
   try {
-    const { payload: {_id}} = req
-    const task = await TaskScheme.find({user_id: _id}).populate("user_id", "userName");
-    console.log(req.payload, "desde el controler")
+    const {
+      payload: { _id },
+    } = req;
+    const task = await TaskScheme.find({ user_id: _id }).populate(
+      "user_id",
+      "userName"
+    );
+
     return res.status(200).json({
       ok: true,
       data: task,
@@ -22,10 +27,12 @@ async function GetTasks(req, res) {
 //crea una tarea
 async function AddTask(req, res) {
   try {
-    const {payload: {_id}} = req; //viene desde la funcion authenticate
-    const newTask = await TaskScheme.create({...req.body, user_id: _id});
+    const {
+      payload: { _id },
+    } = req; //viene desde la funcion authenticate
+    const newTask = await TaskScheme.create({ ...req.body, user_id: _id });
     const user = await UserScheme.findById(_id);
-    user.tasks.push({_id: newTask._id});
+    user.tasks.push({ _id: newTask._id });
     user.save();
     return res.status(201).json({
       ok: true,
@@ -77,20 +84,22 @@ async function DeleteTask(req, res) {
 }
 
 //"borra" una tarea de manera temporal
-async function TemporalDeleteTask(req, res){
+async function TemporalDeleteTask(req, res) {
   const { id } = req.params;
   try {
-    const tempDeleteTask = await TaskScheme.findByIdAndUpdate(id, {virtual_delete: true})
+    const tempDeleteTask = await TaskScheme.findByIdAndUpdate(id, {
+      virtual_delete: true,
+    });
     return res.status(200).json({
       ok: true,
       tempDeletedTask: tempDeleteTask,
-      msg: 'tarea eliminada con éxito'
-    })
+      msg: "tarea eliminada con éxito",
+    });
   } catch (error) {
     res.status(500).json({
-      ok: false, 
-      msg_error: 'error al eliminar la tarea ' + error
-    })
+      ok: false,
+      msg_error: "error al eliminar la tarea " + error,
+    });
   }
 }
 export { GetTasks, AddTask, UpdateTask, DeleteTask, TemporalDeleteTask };
