@@ -34,9 +34,11 @@ async function LoginUser(req, res) {
     if (!userLogged) return res.status(500).json(res_error);
     const rightPass = await Compare(password, userLogged.passHash);
     if (!rightPass) return res.status(500).json(res_error);
+    const token = userLogged.generateAccesToken();
     return res.status(200).json({
       ok: true,
       user: userLogged,
+      token: token,
       msg: "inicio de sesion exitoso!",
     });
   } catch (error) {
