@@ -2,8 +2,8 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
-import taskRouter from "./routes/task.routes";
 import userRouter from './routes/user.routes';
+import taskRouter from './routes/task.routes';
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ app.use(express.json());
 //conexion con DB
 import './database/database';
 //rutas
-app.use('/api', taskRouter)
+app.use('/api',taskRouter)
 app.use('/api', userRouter)
 
 app.listen(app.get("PORT"), () => {
