@@ -10,6 +10,7 @@ require("./database/database");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 _dotenv.default.config();
 const app = (0, _express.default)();
+//
 app.set("PORT", process.env.PORT || 5000);
 
 //middlewares
