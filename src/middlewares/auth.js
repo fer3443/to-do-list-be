@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 const DATA_ERROR = {
   ok: false,
-  error_msg: "usuario no autorizado",
+  error_msg: "usuario no autorizado"
 };
 export function Authenticate(req, res, next) {
   const authHeader = req.headers["authorization"];
