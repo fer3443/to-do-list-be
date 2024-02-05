@@ -67,7 +67,7 @@ async function UpdateTask(req, res) {
 
 //funcion para borrar tareas permanentemente
 async function DeleteTask(req, res) {
-  const { id } = req.body;
+  const { id } = req.params;
   try {
     const deleteTask = await TaskScheme.findByIdAndDelete(id);
     return res.status(201).json({
@@ -90,7 +90,7 @@ async function TemporalDeleteTask(req, res) {
     const tempDeleteTask = await TaskScheme.findByIdAndUpdate(
       id,
       { virtual_delete: true },
-      { new: true }
+      { new: true }//hago que la funcion devuelva el documento actualizado
     );
     return res.status(200).json({
       ok: true,
