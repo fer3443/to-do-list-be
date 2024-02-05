@@ -87,9 +87,11 @@ async function DeleteTask(req, res) {
 async function TemporalDeleteTask(req, res) {
   const { id } = req.params;
   try {
-    const tempDeleteTask = await TaskScheme.findByIdAndUpdate(id, {
-      virtual_delete: true,
-    });
+    const tempDeleteTask = await TaskScheme.findByIdAndUpdate(
+      id,
+      { virtual_delete: true },
+      { new: true }
+    );
     return res.status(200).json({
       ok: true,
       tempDeletedTask: tempDeleteTask,
