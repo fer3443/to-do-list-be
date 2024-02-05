@@ -85,7 +85,7 @@ async function DeleteTask(req, res) {
 
 //"borra" una tarea de manera temporal
 async function TemporalDeleteTask(req, res) {
-  const { id } = req.body;
+  const { id } = req.params;
   try {
     const tempDeleteTask = await TaskScheme.findByIdAndUpdate(id, {
       virtual_delete: true,
