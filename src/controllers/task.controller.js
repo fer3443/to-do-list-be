@@ -49,7 +49,7 @@ async function AddTask(req, res) {
 
 //modifica una tarea
 async function UpdateTask(req, res) {
-  const { id } = req.params;
+  const { id } = req.body;
   try {
     const updateTask = await TaskScheme.findByIdAndUpdate(id, req.body);
     return res.status(202).json({
@@ -67,7 +67,7 @@ async function UpdateTask(req, res) {
 
 //funcion para borrar tareas permanentemente
 async function DeleteTask(req, res) {
-  const { id } = req.params;
+  const { id } = req.body;
   try {
     const deleteTask = await TaskScheme.findByIdAndDelete(id);
     return res.status(201).json({
@@ -85,7 +85,7 @@ async function DeleteTask(req, res) {
 
 //"borra" una tarea de manera temporal
 async function TemporalDeleteTask(req, res) {
-  const { id } = req.params;
+  const { id } = req.body;
   try {
     const tempDeleteTask = await TaskScheme.findByIdAndUpdate(id, {
       virtual_delete: true,
