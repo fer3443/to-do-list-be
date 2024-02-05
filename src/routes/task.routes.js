@@ -6,8 +6,8 @@ const router = express.Router()
 
 router.get('/task', Authenticate ,GetTasks)//lee todas las tareas
 router.post('/task', Authenticate ,AddTask);//crea una nueva tarea
-router.put('/task/:id', Authenticate,UpdateTask); //modifica una tarea
-router.put('/task/temp-del/:id', Authenticate,TemporalDeleteTask); //borra una tarea de forma temporal
-router.delete('/task/:id', Authenticate ,DeleteTask); //borra una tarea de forma permanente
+router.put('/task', Authenticate,UpdateTask); //modifica una tarea
+router.put('/task/temp-del', Authenticate,TemporalDeleteTask); //borra una tarea de forma temporal
+router.delete('/task', Authenticate ,DeleteTask); //borra una tarea de forma permanente
 
 export default router;
