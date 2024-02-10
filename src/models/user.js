@@ -9,6 +9,7 @@ const userScheme = new Schema({
   userName: {
     type: String,
     required: true,
+    unique: true //sirve para agregar un indice en el campo de usarName (evito que se creen dos usarnames iguales)
   },
   passHash: String,
   avatar: String,
