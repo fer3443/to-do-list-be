@@ -33,7 +33,7 @@ async function CreateUser(req, res) {
     return res.status(201).json({
       ok: true,
       addedUser: newUser,
-      msg: "usuario creado con exito",
+      msg: "Usuario creado con exito",
     });
   } catch (error) {
     return res.status(400).json({
