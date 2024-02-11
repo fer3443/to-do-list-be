@@ -46,6 +46,12 @@ async function CreateUser(req, res) {
 async function LoginUser(req, res) {
   try {
     const { userName, password, allowLS } = req.body;
+    if(userName.trim() === '' || password.trim() === ''){
+      return res.status(400).json({
+        ok: false,
+        msg: 'Todos los campos deben estar completos'
+      })
+    }
     const userLogged = await UserScheme.findOne({ userName }).populate("tasks");
     if (!userLogged) return res.status(500).json(res_error);
     const rightPass = await Compare(password, userLogged.passHash);
@@ -60,7 +66,6 @@ async function LoginUser(req, res) {
       ok: true,
       user: userLogged,
       token: token,
-      allowLS: userLogged.allowLS,
       msg: "inicio de sesion exitoso PERRA!",
     });
   } catch (error) {
