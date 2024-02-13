@@ -10,10 +10,6 @@ const TaskScheme = new Schema({
     type: Boolean,
     default: false,
   },
-  createdTo: {
-   date: String,
-   time: String
-  },
   createdAt: {
     type: Date,
     default: Date.now(),

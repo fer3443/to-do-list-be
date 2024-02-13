@@ -23,22 +23,43 @@ async function GetTasks(req, res) {
     });
   }
 }
-
+//trae una tarea por id
+async function GetTaskById(req, res) {
+  try {
+    const { id } = req.params;
+    const task = await TaskScheme.findById(id)
+    if(!task){
+      res.status(400).json({
+        ok: false,
+        msg_error: "La tarea no se ha encontrado"
+      })
+    }
+    return res.status(200).json({
+      ok: true,
+      msg: "peticion exitosa"
+    })
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      msg_error: "error en la peticon " + error
+    })
+  }
+}
 //crea una tarea
 async function AddTask(req, res) {
   try {
     const {
       payload: { _id },
     } = req; //viene desde la funcion authenticate
-    const body = req.body
-    if(Object.keys(body).length === 0){
+    const body = req.body;
+    if (Object.keys(body).length === 0) {
       return res.status(400).json({
         ok: false,
-        msg: 'todos los campos deben ser completados'
-      })
+        msg: "todos los campos deben ser completados",
+      });
     }
     const newTask = await TaskScheme.create({ ...body, user_id: _id });
-   
+
     const user = await UserScheme.findById(_id);
     user.tasks.push({ _id: newTask._id });
     user.save();
@@ -57,7 +78,7 @@ async function AddTask(req, res) {
 
 //modifica una tarea
 async function UpdateTask(req, res) {
-  const { id } = req.body;
+  const { id } = req.params;
   try {
     const updateTask = await TaskScheme.findByIdAndUpdate(id, req.body);
     return res.status(202).json({
@@ -68,7 +89,7 @@ async function UpdateTask(req, res) {
   } catch (error) {
     return res.status(404).json({
       ok: false,
-      error_msg: "error al modificar tarea " + error,
+      msg_error: "error al modificar tarea " + error,
     });
   }
 }
@@ -98,7 +119,7 @@ async function TemporalDeleteTask(req, res) {
     const tempDeleteTask = await TaskScheme.findByIdAndUpdate(
       id,
       { virtual_delete: true },
-      { new: true }//hago que la funcion devuelva el documento actualizado
+      { new: true } //hago que la funcion devuelva el documento actualizado
     );
     return res.status(200).json({
       ok: true,
@@ -112,4 +133,4 @@ async function TemporalDeleteTask(req, res) {
     });
   }
 }
-export { GetTasks, AddTask, UpdateTask, DeleteTask, TemporalDeleteTask };
+export { GetTasks, GetTaskById, AddTask, UpdateTask, DeleteTask, TemporalDeleteTask };
