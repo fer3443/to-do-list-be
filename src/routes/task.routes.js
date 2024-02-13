@@ -5,7 +5,7 @@ import { Authenticate } from "../middlewares/auth";
 const router = express.Router()
 
 router.get('/task', Authenticate ,GetTasks)//lee todas las tareas
-router.get('/task/:id', Authenticate, GetTaskById)//lee una tarea por ID
+router.get('/task/:id', GetTaskById)//lee una tarea por ID
 router.post('/task', Authenticate ,AddTask);//crea una nueva tarea
 router.put('/task/:id', Authenticate,UpdateTask); //modifica una tarea
 router.put('/task/temp-del/:id', Authenticate,TemporalDeleteTask); //borra una tarea de forma temporal

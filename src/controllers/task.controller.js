@@ -23,28 +23,32 @@ async function GetTasks(req, res) {
     });
   }
 }
-//trae una tarea por id
+
 async function GetTaskById(req, res) {
   try {
     const { id } = req.params;
-    const task = await TaskScheme.findById(id)
-    if(!task){
-      res.status(400).json({
+    console.log(id)
+    // Obtener la tarea por ID
+    const task = await TaskScheme.findById(id);
+    if (!task) {
+      return res.status(404).json({
         ok: false,
         msg_error: "La tarea no se ha encontrado"
-      })
+      });
     }
     return res.status(200).json({
       ok: true,
-      msg: "peticion exitosa"
-    })
+      getedTask: task,
+      msg: "Petición exitosa"
+    });
   } catch (error) {
     return res.status(500).json({
       ok: false,
-      msg_error: "error en la peticon " + error
-    })
+      msg_error: "Error en la petición " + error
+    });
   }
 }
+
 //crea una tarea
 async function AddTask(req, res) {
   try {
