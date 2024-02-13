@@ -30,7 +30,15 @@ async function AddTask(req, res) {
     const {
       payload: { _id },
     } = req; //viene desde la funcion authenticate
-    const newTask = await TaskScheme.create({ ...req.body, user_id: _id });
+    const body = req.body
+    if(Object.keys(body).length === 0){
+      return res.status(400).json({
+        ok: false,
+        msg: 'todos los campos deben ser completados'
+      })
+    }
+    const newTask = await TaskScheme.create({ ...body, user_id: _id });
+   
     const user = await UserScheme.findById(_id);
     user.tasks.push({ _id: newTask._id });
     user.save();
