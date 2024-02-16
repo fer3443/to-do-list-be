@@ -27,7 +27,6 @@ async function GetTasks(req, res) {
 async function GetTaskById(req, res) {
   try {
     const { id } = req.params;
-    console.log(id)
     // Obtener la tarea por ID
     const task = await TaskScheme.findById(id);
     if (!task) {
@@ -84,7 +83,14 @@ async function AddTask(req, res) {
 async function UpdateTask(req, res) {
   const { id } = req.params;
   try {
-    const updateTask = await TaskScheme.findByIdAndUpdate(id, req.body);
+    const existTask = await TaskScheme.findById(id)
+    if(!existTask){
+      return res.status(404).json({
+        ok:false,
+        msg_error: "Tarea no encontrada"
+      })
+    }
+    const updateTask = await TaskScheme.findByIdAndUpdate(id, req.body, {new: true});
     return res.status(202).json({
       ok: true,
       updatedTask: updateTask,
