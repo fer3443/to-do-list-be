@@ -1,2 +1,0 @@
-USER_MAIL = 'fer3443@gmail.com'
-PASSWORD_MAIL
