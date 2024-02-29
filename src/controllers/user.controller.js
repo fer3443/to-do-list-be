@@ -75,4 +75,61 @@ async function LoginUser(req, res) {
     });
   }
 }
-export { CreateUser, LoginUser };
+
+async function UpdateUser(req, res){
+  try {
+    const {
+      payload: { _id },
+    } = req;
+    const body = req.body
+    const user = await UserScheme.findById(_id)
+    if(!user){
+      return res.status(404).json({
+        ok: false,
+        msg_error:'usuario no encontrado'
+      })
+    }
+    if (Object.keys(body).length === 0) {
+      return res.status(400).json({
+        ok: false,
+        msg_error: "todos los campos deben ser completados",
+      });
+    }
+    const updatedUser = await UserScheme.findByIdAndUpdate(_id, body, {new: true})
+    
+    return res.status(200).json({
+      ok: true,
+      user: updatedUser,
+      msg:  'Datos actualizados con exito'
+    })
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      msg_error: `error en el servidor ${err}`
+    })
+  }
+}
+
+async function GetUserDataById(req, res){
+  try {
+    const {
+      payload: { _id },
+    } = req;
+    const user = await UserScheme.findById(_id)
+    if(!user){
+      return res.status(404).json({
+        ok: false,
+        msg_error: "usuario no encontrado"
+      })
+    }
+    return res.status(200).json({
+      ok: true,
+      readedUser: user,
+      msg: 'peticion exitosa'
+    })
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error en el servidor ' + error)
+  }
+}
+export { CreateUser, LoginUser, UpdateUser, GetUserDataById };

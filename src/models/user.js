@@ -29,12 +29,26 @@ const userScheme = new Schema({
     type: Date,
     default: Date.now(),
   },
+  // resetPasswordToken: {
+  //   token: String,
+  //   default: null
+  // }
 });
 
 userScheme.methods.generateAccesToken = function(){
   const token =  jwt.sign({_id: this._id}, process.env.SECRET_KEY)
   return token
 }
+
+// userScheme.methods.generateResetPasswordToken = function(){
+//   const passwordToken = jwt.sign({_id: this._id}, process.env.SECRET_KEY, { expiresIn: "1h"});
+//   this.resetPasswordToken = passwordToken;
+//   return this.save()
+// }
+
+// userScheme.statics.findByResetPasswordToken = function(passwordToken){
+//   return this.findOne({resetPasswordToken: passwordToken})
+// }
 
 userScheme.set("toJSON",{
   transform: function(doc, retorno){
