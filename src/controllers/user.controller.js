@@ -180,4 +180,22 @@ El equipo de administrador de tareas`,
     throw new Error("Error en el servidor " + error);
   }
 }
-export { CreateUser, LoginUser, UpdateUser, GetUserDataById, ForgotPassword };
+
+async function ResetPassword(req, res){
+  const { token, password } = req.body;
+  const user =  await UserScheme.findByResetPasswordToken(token);
+  if(!user){
+    return res.status(404).json({
+      ok: false,
+      msg_error: 'Token invalido'
+    })
+  }
+  user.password = password;
+  user.resetPasswordToken = null;
+  await user.save()
+  return res.status(200).json({
+    ok: true,
+    msg: 'Contraseña actualizada con exito'
+  })
+}
+export { CreateUser, LoginUser, UpdateUser, GetUserDataById, ForgotPassword, ResetPassword };
