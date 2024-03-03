@@ -106,7 +106,7 @@ async function UpdateUser(req, res) {
       user: updatedUser,
       msg: "Datos actualizados con exito",
     });
-  } catch (error) {
+  } catch (err) {
     return res.status(500).json({
       ok: false,
       msg_error: `error en el servidor ${err}`,
@@ -144,11 +144,11 @@ async function ForgotPassword(req, res) {
     if (!user) {
       return res.status(404).json({
         ok: false,
-        msg_error: "usuario invalido",
+        error: "usuario invalido",
       });
     }
     const token = await user.generateResetPasswordToken();
-    const {resetPasswordToken} = token
+    const { resetPasswordToken } = token;
     const mailOption = {
       from: process.env.USER_MAILER,
       to: user.userName,
@@ -157,7 +157,7 @@ async function ForgotPassword(req, res) {
 
 Para recuperar tu contraseña, haz clic en el siguiente enlace:
 
-<a href="${process.env.CLIENT_URL}/reset-password/${resetPasswordToken}">Click aquí para reestablecer su contraseña</a>
+${process.env.CLIENT_URL}/api/user/reset-password/${resetPasswordToken}
 
 Este enlace caducará en 1 hora.
 
@@ -170,32 +170,53 @@ El equipo de administrador de tareas`,
     transporter.sendMail(mailOption, (err, info) => {
       if (err) {
         console.log(err);
-        return res.status(500).json({ error: 'Error al enviar el correo electrónico' });
+        return res
+          .status(500)
+          .json({ error: "Error al enviar el correo electrónico" });
       }
-  
-      res.json({ message: 'Se ha enviado un correo electrónico con instrucciones para recuperar tu contraseña' });
+
+      res
+        .status(200)
+        .json({
+          message:
+            "Se ha enviado un correo electrónico con instrucciones para recuperar tu contraseña",
+        });
     });
   } catch (error) {
-    console.error(error);
-    throw new Error("Error en el servidor " + error);
+    throw error;
   }
 }
 
-async function ResetPassword(req, res){
-  const { token, password } = req.body;
-  const user =  await UserScheme.findByResetPasswordToken(token);
-  if(!user){
+async function ResetPassword(req, res) {
+  const { token } = req.params;
+  const { password } = req.body;
+  const newPassword = password;
+  if (newPassword === "" || newPassword === null) {
+    return res.status(500).json({
+      ok: false,
+      msg_error: "debe completar los campos",
+    });
+  }
+  const user = await UserScheme.findByResetPasswordToken(token);
+  if (!user) {
     return res.status(404).json({
       ok: false,
-      msg_error: 'Token invalido'
-    })
+      msg_error: "Token invalido",
+    });
   }
-  user.password = password;
+  user.password = newPassword;
   user.resetPasswordToken = null;
-  await user.save()
+  await user.save();
   return res.status(200).json({
     ok: true,
-    msg: 'Contraseña actualizada con exito'
-  })
+    msg: "Contraseña actualizada con exito",
+  });
 }
-export { CreateUser, LoginUser, UpdateUser, GetUserDataById, ForgotPassword, ResetPassword };
+export {
+  CreateUser,
+  LoginUser,
+  UpdateUser,
+  GetUserDataById,
+  ForgotPassword,
+  ResetPassword,
+};
