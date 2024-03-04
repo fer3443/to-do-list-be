@@ -144,7 +144,7 @@ async function ForgotPassword(req, res) {
     if (!user) {
       return res.status(404).json({
         ok: false,
-        error: "usuario invalido",
+        msg_error: "usuario invalido",
       });
     }
     const token = await user.generateResetPasswordToken();
@@ -155,9 +155,11 @@ async function ForgotPassword(req, res) {
       subject: "Recuperación de contraseña",
       text: `Hola ${user.name},
 
-Para recuperar tu contraseña, haz clic en el siguiente enlace:
+Para recuperar tu contraseña, copie el siguiente codigo de validacion y luego peguelo en el campo vacio indicado en el sitio web.
 
-${process.env.CLIENT_URL}/api/user/reset-password/${resetPasswordToken}
+Código de validación:
+
+${resetPasswordToken}
 
 Este enlace caducará en 1 hora.
 
@@ -172,13 +174,17 @@ El equipo de administrador de tareas`,
         console.log(err);
         return res
           .status(500)
-          .json({ error: "Error al enviar el correo electrónico" });
+          .json({ 
+            ok: false,
+            msg_error: "Error al enviar el correo electrónico" 
+          });
       }
 
       res
         .status(200)
         .json({
-          message:
+          ok: true,
+          msg:
             "Se ha enviado un correo electrónico con instrucciones para recuperar tu contraseña",
         });
     });
@@ -190,21 +196,21 @@ El equipo de administrador de tareas`,
 async function ResetPassword(req, res) {
   const { token } = req.params;
   const { password } = req.body;
-  const newPassword = password;
-  if (newPassword === "" || newPassword === null) {
+  if (password === "" || password === null) {
     return res.status(500).json({
       ok: false,
       msg_error: "debe completar los campos",
     });
   }
   const user = await UserScheme.findByResetPasswordToken(token);
+  const passHash = await Encrypt(password);
   if (!user) {
     return res.status(404).json({
       ok: false,
       msg_error: "Token invalido",
     });
   }
-  user.password = newPassword;
+  user.passHash = passHash;//ver tema del hasheo y la propiedad donde se almacena passwordHash
   user.resetPasswordToken = null;
   await user.save();
   return res.status(200).json({
